@@ -1,28 +1,28 @@
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * A test class that drives the multi-threaded array checking application.
- * It takes user input for an integer list and a target value, initializes the
- * {@link SharedData} object, runs two threads to process the data, and displays
- * the solution results if found.
+ * Tests the multithreaded Subset Sum algorithm.
+ * Reads input values, creates shared data, starts two worker
+ * threads, and prints the result.
  */
 public class TestThreadCheckArray {
 
     /**
-     * The main method that executes the program workflow, managing user input,
-     * thread execution, and formatted output reporting.
+     * Runs the Subset Sum test program.
      *
-     * @param args command line arguments {@code String[]} passed to the application
+     * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
         try (Scanner input = new Scanner(System.in)) {
             Thread thread1, thread2;
+
             System.out.println("Enter array size");
             int num = input.nextInt();
 
-            // Refactored array to an ArrayList<Integer>
-            ArrayList<Integer> array = new ArrayList<>(num);
+            ArrayList<Integer> array = new ArrayList<>();
+
             System.out.println("Enter numbers for array");
 
             for (int index = 0; index < num; index++) {
@@ -36,6 +36,7 @@ public class TestThreadCheckArray {
 
             thread1 = new Thread(new ThreadCheckArray(sd), "thread1");
             thread2 = new Thread(new ThreadCheckArray(sd), "thread2");
+
             thread1.start();
             thread2.start();
 
@@ -43,7 +44,8 @@ public class TestThreadCheckArray {
                 thread1.join();
                 thread2.join();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                return;
             }
 
             if (!sd.getFlag()) {
@@ -51,30 +53,45 @@ public class TestThreadCheckArray {
                 return;
             }
 
-            // Updated length references to use .size()
-            System.out.println("Solution for b : " + sd.getB() + ",n = " + sd.getArray().size());
+            System.out.println("Solution for b : " + sd.getB()
+                    + ",n = " + sd.getArray().size());
+
             System.out.print("I:    ");
+
             for (int index = 0; index < sd.getArray().size(); index++) {
                 System.out.print(index + "    ");
             }
+
             System.out.println();
             System.out.print("A:    ");
+
             for (int index : sd.getArray()) {
                 System.out.print(index);
                 int counter = 5;
+
                 while (true) {
                     index = index / 10;
                     counter--;
                     if (index == 0) break;
                 }
-                for (int i = 0; i < counter; i++) System.out.print(" ");
+
+                for (int i = 0; i < counter; i++) {
+                    System.out.print(" ");
+                }
             }
+
             System.out.println();
             System.out.print("C:    ");
+
             for (boolean index : sd.getWinArray()) {
-                if (index) System.out.print("1    ");
-                else System.out.print("0    ");
+                if (index) {
+                    System.out.print("1    ");
+                } else {
+                    System.out.print("0    ");
+                }
             }
+
+            System.out.println();
         }
     }
 }
